@@ -20,6 +20,7 @@ module cp0_reg(
       input wire [31:0] pcM,              //发生异常指令的pc
       input wire is_in_delayslot,         //异常指令是否位于延迟槽
       input wire [31:0] badvaddr,         //最近一次导致发生地址错例外的虚地址(load/store, pc未对齐地址)
+      input wire eretM,
 
       // tlb处理
       input wire [3:0] tlb_typeM,                 //tlb写cp0使能
@@ -129,7 +130,8 @@ module cp0_reg(
       end
    end
 
-
+wire EXL;
+assign EXL = status_reg[1];
 //与异常有关
    //status
    wire status_wen;
@@ -140,7 +142,7 @@ module cp0_reg(
          status_reg    <= `STATUS_INIT;  //BEV置为1
       end
       else if(flush_exception) begin
-         status_reg[`EXL_BIT] <= &except_type ? //eret
+         status_reg[`EXL_BIT] <= eretM ? //eret
                                  1'b0 : 1'b1;   
       end
       else if(status_wen) begin
@@ -163,8 +165,8 @@ module cp0_reg(
          cause_reg     <= `CAUSE_INIT;
       end
       else begin
-         if(flush_exception) begin
-            cause_reg[`BD_BIT] <= is_in_delayslot;
+         if(flush_exception & ~eretM) begin
+            cause_reg[`BD_BIT] <= EXL ? cause_reg[`BD_BIT] : is_in_delayslot;   //EXL=1时，不更新cause.BD
             cause_reg[`EXC_CODE_BITS] <= except_type;
          end
          if(cause_wen) begin
@@ -172,9 +174,11 @@ module cp0_reg(
          end
          if(compare_wen) begin
             cause_reg[`IP7_BIT] <= 1'b0;
+            cause_reg[`TI_BIT] <= 1'b0;
          end
          else if((compare_reg != 32'b0) && (count_reg == compare_reg)) begin
             cause_reg[`IP7_BIT] <=  1'b1;
+            cause_reg[`TI_BIT] <= 1'b1;
          end
          //外部中断
          cause_reg[`IP6_IP2_BITS] <= ~stallW ? ext_int[4:0] : 0;
@@ -186,8 +190,8 @@ module cp0_reg(
    assign epc_wen = wen & (addr == `CP0_EPC);
 
    always @(posedge clk) begin
-      if(flush_exception) begin
-         epc_reg <= is_in_delayslot ? pc_minus4 : pcM;
+      if(flush_exception & ~eretM) begin
+         epc_reg <= EXL ? epc_reg : (is_in_delayslot ? pc_minus4 : pcM);   ////EXL=1时，不更新EPC
       end
       else if(epc_wen) begin
          epc_reg <= wdata;

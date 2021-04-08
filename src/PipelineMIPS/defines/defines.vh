@@ -197,7 +197,7 @@
 
 //cause
 `define BD_BIT 31             //延迟槽
-`define TI_BIT 30             //计时器中断指示 //don't use
+`define TI_BIT 30             //计时器中断指示
 `define CE_BITS 29:28         //CpU异常时，协处理器编号 //don't use
 `define IV_BIT 23             //don't use
 `define IP1_IP0_BITS 9:8      //软件中断位

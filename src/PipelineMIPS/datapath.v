@@ -731,6 +731,7 @@ module datapath (
         .pcM(pcM),
         .is_in_delayslot(is_in_delayslot_iM),
         .badvaddr(badvaddrM),
+        .eretM(eretM),
 
         //CP0输出
         .cp0_statusW(cp0_statusW),
