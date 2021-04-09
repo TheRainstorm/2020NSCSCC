@@ -191,6 +191,8 @@
 `define IM1_IM0_BITS  9:8
 `define IM7_IM2_BITS  15:10
 
+`define KSU_BITS 4:3
+
 `define CU_BITS 31:28   //4'b0001
 `define ERL_BIT 2       //没实现
 `define STATUS_INIT 32'h00400000;

@@ -150,6 +150,7 @@ assign EXL = status_reg[1];
          status_reg[`EXL_BIT] <= wdata[`EXL_BIT];
          status_reg[`IM7_IM0_BITS] <= wdata[`IM7_IM0_BITS];
          status_reg[`BEV_BIT] <= wdata[`BEV_BIT];
+         status_reg[`KSU_BITS] <= wdata[`KSU_BITS];
       end
    end
 
