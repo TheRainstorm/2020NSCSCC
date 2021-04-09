@@ -420,12 +420,19 @@ module datapath (
         .jump_conflictD(jump_conflictD),    //jr rs寄存器发生冲突
         .pc_jumpD(pc_jumpD)                 //D阶段最终跳转地址
     );
+
+    //patch
+    wire this_is_a_mispredict_instrD, this_is_a_mispredict_instrE, this_is_a_mispredict_instrM;
+    assign this_is_a_mispredict_instrD = flush_pred_failedM;
+    
 //ID_EX
     id_ex id_ex0(
         .clk(clk),
         .rst(rst),
         .stallE(stallE),
         .flushE(flushE),
+        .this_is_a_mispredict_instrD(this_is_a_mispredict_instrD),
+        .this_is_a_mispredict_instrE(this_is_a_mispredict_instrE),
         .pcD(pcD),
         .rsD(rsD), .rd1D(rd1D), .rd2D(rd2D),
         .rtD(rtD), .rdD(rdD),
@@ -578,6 +585,8 @@ module datapath (
         .rst(rst),
         .stallM(stallM),
         .flushM(flushM),
+        .this_is_a_mispredict_instrE(this_is_a_mispredict_instrE),
+        .this_is_a_mispredict_instrM(this_is_a_mispredict_instrM),
         .pcE(pcE),
         .alu_outE(alu_outE),
         .rt_valueE(rt_valueE),
@@ -705,6 +714,8 @@ module datapath (
 
     assign {TLBWR, TLBWI, TLBR, TLBP} = tlb_typeM;
 
+    wire [31:0] pcM_t;
+    assign pcM_t = this_is_a_mispredict_instrM ? pcD : pcM;
     cp0_reg cp0(
         .clk(clk),
         .rst(rst),
@@ -728,7 +739,7 @@ module datapath (
         //异常处理
         .flush_exception(flush_exceptionM),
         .except_type(except_typeM),
-        .pcM(pcM),
+        .pcM(pcM_t),
         .is_in_delayslot(is_in_delayslot_iM),
         .badvaddr(badvaddrM),
         .eretM(eretM),
