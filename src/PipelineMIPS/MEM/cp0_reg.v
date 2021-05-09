@@ -178,11 +178,11 @@ assign EXL = status_reg[1];
             cause_reg[`TI_BIT] <= 1'b0;
          end
          else if((compare_reg != 32'b0) && (count_reg == compare_reg)) begin
-            cause_reg[`IP7_BIT] <=  1'b1;
             cause_reg[`TI_BIT] <= 1'b1;
          end
          //外部中断
          cause_reg[`IP6_IP2_BITS] <= ~stallW ? ext_int[4:0] : 0;
+         cause_reg[`IP7_BIT] <=  ~stallW ? cause_reg[`TI_BIT] : cause_reg[`IP7_BIT];      //不能在cache请求未完成时发生异常
       end
    end
 
