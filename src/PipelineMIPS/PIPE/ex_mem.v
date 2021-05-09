@@ -32,7 +32,6 @@ module ex_mem (
     input wire trap_resultE,
     input wire branchL_E,
     input wire [6:0] cacheE,
-    input wire this_is_a_mispredict_instrE,
 
     output reg [31:0] pcM,
     output reg [31:0] alu_outM,
@@ -64,9 +63,9 @@ module ex_mem (
     output reg [31:0] mem_addrM,
     output reg trap_resultM,
     output reg branchL_M,
-    output reg [6:0] cacheM,
-    output reg this_is_a_mispredict_instrM
+    output reg [6:0] cacheM
 );
+
     always @(posedge clk) begin
         if(rst | flushM) begin
             pcM                     <=              0;
@@ -101,7 +100,6 @@ module ex_mem (
             trap_resultM            <=              0;
             branchL_M               <=              0;
             cacheM                  <=              0;
-            this_is_a_mispredict_instrM                  <=              0;
         end
         else if(~stallM) begin
             pcM                     <=      pcE                 ;
@@ -136,7 +134,6 @@ module ex_mem (
             trap_resultM            <=      trap_resultE        ;
             branchL_M               <=      branchL_E           ;
             cacheM                  <=      cacheE              ;
-            this_is_a_mispredict_instrM                  <=      this_is_a_mispredict_instrE              ;
         end
     end
 endmodule

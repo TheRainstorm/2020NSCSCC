@@ -38,7 +38,6 @@ module id_ex (
     input wire movnD, movzD,
     input wire branchL_D,
     input wire [6:0] cacheD,
-    input wire this_is_a_mispredict_instrD,
 
     output reg [31:0] pcE,
     output reg [31:0] rd1E, rd2E,
@@ -76,18 +75,8 @@ module id_ex (
     output reg inst_tlb_refillE, inst_tlb_invalidE,
     output reg movnE, movzE,
     output reg branchL_E,
-    output reg [6:0] cacheE,
-    output reg this_is_a_mispredict_instrE
+    output reg [6:0] cacheE
 );
-    always @(posedge clk) begin
-        if(rst) begin
-            this_is_a_mispredict_instrE <= 0;
-        end
-        else if(~stallE) begin
-            this_is_a_mispredict_instrE <= this_is_a_mispredict_instrD;
-        end
-    end
-    
     always @(posedge clk) begin
         if(rst | flushE) begin
             pcE                     <=      0   ;
