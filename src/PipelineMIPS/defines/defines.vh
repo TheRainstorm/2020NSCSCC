@@ -211,27 +211,28 @@
 
 //config
 `define M_BIT 31        //实现config1, 1
-`define BE_BIT 15       //小端, 0
-`define AT_BITS 14:13   //MIPS32, 0
-`define AR_BITS 14:13   //Release1, 0
-`define MT_BITS 9:7     //MMU type: standard TLB, 1
-`define CONFIG_INIT 32'h8000_0080
+`define K23_BITS 30:28  //Fixed Mapping MMU kseg2/3 cacheability and coherency attribute:impl standard TLB, 0, R/W
+`define KU_BITS 27:25   //Fixed Mapping MMU kuseg cacheability and coherency attribute:impl standard TLB, 0, R/W
+`define BE_BIT 15       //小端, 0, R
+`define AT_BITS 14:13   //MIPS32, 0, R
+`define AR_BITS 14:13   //Release1, 0, R
+`define MT_BITS 9:7     //MMU type: standard TLB, 1, R
+`define VI_BIT 3        //virtual instr cache: not virtual, 0, R
+`define K0_BITS 2:0     //Kseg0 cacheability and coherency attribute: cacheable, 3, R/W
     //R/W
-`define K23_BITS 30:28
-`define KU_BITS 27:25
-`define K0_BITS 2:0
+`define CONFIG_INIT 32'h8000_0083
 
 //config1(read only)
-// `define M_BIT 31         //实现config2, 0
-`define MMU_SIZE_BITS 30:25 //32-1
+// `define M_BIT 31         //未实现config2, 0
+`define MMU_SIZE_BITS 30:25 //32-1 //为了提高频率改为5-1
 `define IS_BITS 24:22       //128 cache line, encoding: 1
-`define IL_BITS 21:19       //8 bytes, encoding: 2
+`define IL_BITS 21:19       //32 bytes, encoding: 4
 `define IA_BITS 18:16       //4 way, encoding: 3
 `define DS_BITS 15:13       //128 cache line, encoding: 1
-`define DL_BITS 12:10       //8 bytes, encoding: 2
+`define DL_BITS 12:10       //32 bytes, encoding: 4
 `define DA_BITS 9 :7        //4 way, encoding: 3
 `define FP_BIT  0           //FPU implement, 0
-`define CONFIG1_INIT 32'hbe53_2980  //1 011111 001 010 011 001 010 011 000000 0
+`define CONFIG1_INIT 32'h08633180  //0 000100 001 100 011 001 100 011 000000 0
 
 //prid (read only)
 `define PRID_INIT  32'h00004220;
