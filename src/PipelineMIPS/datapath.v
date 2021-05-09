@@ -204,6 +204,8 @@ module datapath (
     wire cp0_to_regE;
     wire trap_resultE, trap_resultM;
 
+    wire intF, intD, intE, intM;
+
 // hazard
     wire stallD, stallE, stallW;
     wire flushF, flushD, flushE, flushW;
@@ -331,6 +333,14 @@ module datapath (
     assign inst_enF = pc_reg_ceF & ~flush_exceptionM & ~pc_errorF & ~flush_pred_failedM & ~flush_jump_confilctE;
 
     assign is_in_delayslot_iF = branchD | jumpD;
+
+    //将中断绑定到F阶段的指令
+    int int(
+        .cp0_status(cp0_statusW), .cp0_cause(cp0_causeW),
+
+        .int(intF)
+    );
+
 //IF_ID
     if_id if_id0(
         .clk(clk), .rst(rst),
@@ -342,7 +352,9 @@ module datapath (
         .is_in_delayslot_iF(is_in_delayslot_iF),
         .inst_tlb_refillF(inst_tlb_refillF & inst_enF),
         .inst_tlb_invalidF(inst_tlb_invalidF & inst_enF),
+        .intF(intF),
         
+        .intD(intD),
         .pcD(pcD),
         .pc_plus4D(pc_plus4D),
         .instrD(instrD),
@@ -464,7 +476,10 @@ module datapath (
         .syscallD(syscallD),	
         .eretD(eretD),		
         .cp0_wenD(cp0_wenD),	
-        .cp0_to_regD(cp0_to_regD),	      
+        .cp0_to_regD(cp0_to_regD),	     
+        .intD(intD),
+
+        .intE(intE), 
         .pcE(pcE),
         .rsE(rsE), .rd1E(rd1E), .rd2E(rd2E),
         .rtE(rtE), .rdE(rdE),
@@ -612,7 +627,9 @@ module datapath (
         .cp0_wenE(cp0_wenE),		
         .cp0_to_regE(cp0_to_regE),
         .cacheE(cacheE),
+        .intE(intE), 
 
+        .intM(intM),
         .pcM(pcM),
         .alu_outM(alu_outM),
         .rt_valueM(rt_valueM),
@@ -683,7 +700,7 @@ module datapath (
     exception exception0(
         .rst(rst),
         .trap(trap_resultM),
-        .ri(riM), .break(breakM), .syscall(syscallM), .overflow(overflowM), .addrErrorSw(addrErrorSwM), .addrErrorLw(addrErrorLwM), .pcError(pcErrorM), .eretM(eretM),
+        .int(intM), .ri(riM), .break(breakM), .syscall(syscallM), .overflow(overflowM), .addrErrorSw(addrErrorSwM), .addrErrorLw(addrErrorLwM), .pcError(pcErrorM), .eretM(eretM),
         //tlb exception
         .mem_read_enM(mem_read_enM),
         .mem_write_enM(mem_write_enM),

@@ -8,8 +8,9 @@ module if_id(
     input wire [31:0] instrF,
     input wire is_in_delayslot_iF,
     input wire inst_tlb_refillF, inst_tlb_invalidF,
+    input wire intF,
 
-
+    output reg intD,
     output reg [31:0] pcD,
     output reg [31:0] pc_plus4D,
     output reg [31:0] instrD,
@@ -25,6 +26,7 @@ module if_id(
             is_in_delayslot_iD  <= 0;
             inst_tlb_refillD    <= 0;
             inst_tlb_invalidD   <= 0;
+            intD   <= 0;
         end
         else if(~stallD) begin
             pcD                 <= pcF                  ;
@@ -33,6 +35,7 @@ module if_id(
             is_in_delayslot_iD  <= is_in_delayslot_iF   ;
             inst_tlb_refillD    <= inst_tlb_refillF     ;
             inst_tlb_invalidD   <= inst_tlb_invalidF    ;
+            intD   <= intF;
         end
     end
 endmodule

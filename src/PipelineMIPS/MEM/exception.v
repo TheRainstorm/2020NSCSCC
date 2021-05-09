@@ -3,7 +3,7 @@
 module exception(
    input rst,
    input wire trap,
-   input ri, break, syscall, overflow, addrErrorSw, addrErrorLw, pcError, eretM,
+   input int, ri, break, syscall, overflow, addrErrorSw, addrErrorLw, pcError, eretM,
       //tlb exception
    input wire mem_read_enM,
    input wire mem_write_enM,
@@ -23,15 +23,6 @@ module exception(
    output [31:0] badvaddrM
 );
 
-   //INTERUPT
-   wire int;
-   //             //IE             //EXL            
-   assign int =   cp0_status[`IE_BIT] && ~cp0_status[`EXL_BIT] && (
-                     //IM                 //IP
-                  ( |(cp0_status[`IM1_IM0_BITS] & cp0_cause[`IP1_IP0_BITS]) ) ||        //soft interupt
-                  ( |(cp0_status[`IM7_IM2_BITS] & cp0_cause[`IP7_IP2_BITS]) )           //hard interupt
-   );
-   // 全局中断开启,且没有例外在处理,识别软件中断或者硬件中断;
 
    //TLB
    wire tlb_mod, tlb_tlbl, tlb_tlbs;

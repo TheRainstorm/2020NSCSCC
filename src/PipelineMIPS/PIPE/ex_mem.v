@@ -32,7 +32,9 @@ module ex_mem (
     input wire trap_resultE,
     input wire branchL_E,
     input wire [6:0] cacheE,
+    input wire intE,
 
+    output reg intM,
     output reg [31:0] pcM,
     output reg [31:0] alu_outM,
     output reg [31:0] rt_valueM,
@@ -100,6 +102,7 @@ module ex_mem (
             trap_resultM            <=              0;
             branchL_M               <=              0;
             cacheM                  <=              0;
+            intM <= 0;
         end
         else if(~stallM) begin
             pcM                     <=      pcE                 ;
@@ -134,6 +137,7 @@ module ex_mem (
             trap_resultM            <=      trap_resultE        ;
             branchL_M               <=      branchL_E           ;
             cacheM                  <=      cacheE              ;
+            intM <= intE;
         end
     end
 endmodule

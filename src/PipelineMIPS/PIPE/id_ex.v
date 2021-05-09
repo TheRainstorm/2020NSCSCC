@@ -38,7 +38,9 @@ module id_ex (
     input wire movnD, movzD,
     input wire branchL_D,
     input wire [6:0] cacheD,
+    input wire intD,
 
+    output reg intE,
     output reg [31:0] pcE,
     output reg [31:0] rd1E, rd2E,
     output reg [4:0] rsE, rtE, rdE,
@@ -120,6 +122,7 @@ module id_ex (
             movzE                   <=      0   ;
             branchL_E               <=      0   ;
             cacheE                  <=      0   ;
+            intE <= 0;
         end 
         else if(~stallE) begin
             pcE                     <=  pcD                     ;
@@ -163,6 +166,7 @@ module id_ex (
             movzE                   <=  movzD                   ;
             branchL_E               <=  branchL_D               ;
             cacheE                  <=  cacheD                  ;
+            intE <= intD;
         end
     end
 
